@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Розумний будинок</title>
+    <style>
+        /* Загальні стилі для обнулення */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Arial", sans-serif;
+            background-color: #374b79;
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
+        }
+
+        /* Контейнер для тексту */
+        .text-container {
+            width: 40%; /* Задаємо ширину текстового блоку */
+            padding: 20px;
+            background-color: #fa9c56;
+            margin-left: 20px; /* Відступ зліва */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        .text-container h2 {
+            font-size: 28px;
+            color: #000000;
+            margin-bottom: 20px;
+        }
+
+        .text-container p {
+            font-size: 18px;
+            line-height: 1.6;
+            color: #000000;
+        }
+
+        /* Хедер */
+        .banner {
+            position: relative;
+            width: 100%;
+            height: 100vh; /* Висота на весь екран */
+            overflow: hidden;
+            
+        }
+
+        .banner h1 {
+            font-size: 4rem;
+            color: white;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
+            cursor: pointer;
+            transition: filter 0.5s ease, transform 0.5s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        .banner h1:hover {
+            filter: blur(5px);
+            transform: scale(1.1); /* Збільшуємо текст для більшого ефекту */
+        }
+
+        .banner img {
+            width: 100%; /* Банер на всю ширину */
+            height: 100%; /* Банер на всю висоту */
+            object-fit: cover; /* Масштабування, щоб не спотворювати зображення */
+        }
+
+        .banner-content {
+            position: absolute;
+            top: 50%; /* Розташування по центру банера */
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+            text-align: center;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.7),
+                         0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .banner-title {
+            font-family: Arial, sans-serif; /* Зміна шрифту на Arial */
+            font-size: 4rem;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 0 0 10px rgb(249, 100, 0), 
+                        0 0 20px rgb(255, 60, 0),
+                        0 0 30px rgb(255, 89, 0);
+            animation: glow 1.5s infinite alternate;
+        }
+
+        @keyframes glow {
+            0% {
+                text-shadow: 0 0 10px rgb(251, 135, 3),
+                            0 0 20px rgb(253, 85, 1),
+                            0 0 30px rgb(255, 115, 1);
+            }
+            100% {
+                text-shadow: 0 0 20px rgb(253, 87, 3),
+                            0 0 40px rgb(251, 123, 3),
+                            0 0 60px rgb(255, 91, 3);
+            }
+        }
+
+        .banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('C:/Users/User/Desktop/HTML/site/photo_5325764816205374107_y.jpg') no-repeat center/cover;
+            animation: zoomIn 5s ease-out forwards;
+        }
+
+        @keyframes zoomIn {
+            0% {
+                transform: scale(1.1); /* Початкове збільшення */
+            }
+            100% {
+                transform: scale(1); /* Зупиняємо анімацію у звичайному масштабі */
+            }
+        }
+
+        /* Горизонтальне меню */
+        .navbar {
+            background-color: #333; /* Темний фон */
+            display: flex;
+            justify-content: center; /* Елементи центруються по горизонталі */
+            padding: 10px 0; /* Відступи зверху і знизу */
+        }
+
+        .navbar ul {
+            list-style-type: none;
+            display: flex; /* Елементи розташовуються в ряд */
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar li {
+            position: relative; /* Для позиціонування підменю */
+            margin: 0 15px; /* Відступи між пунктами меню */
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.2em;
+            background-color: transparent;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .navbar a:hover {
+            background-color: #ffb366; /* Колір фону при наведенні */
+            color: #333; /* Колір тексту при наведенні */
+        }
+
+        .submenu {
+            list-style-type: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: #333;
+            visibility: hidden;
+            padding: 0;
+            opacity: 0;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            border-radius: 5px;
+            padding: 0; /* Прибираємо відступи */
+            width: 210px; /* Ширина підменю */
+            display: flex; /* Використовуємо flexbox */
+            flex-direction: column; /* Розташовуємо елементи вертикально */
+            z-index: 10; /* Перекриває інші елементи на сторінці */
+        }
+
+        /* При наведенні на пункт меню з підменю */
+        .navbar li:hover .submenu {
+            visibility: visible; /* Зробити видимим */
+            opacity: 1; /* Зробити прозорим */
+        }
+
+        /* Стилі для елементів підменю */
+        .submenu li {
+            margin: 5px 0;
+        }
+
+        .submenu a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            display: block; /* Всьому елементу задаємо блочний вигляд */
+            border-radius: 5px;
+        }
+
+        .submenu a:hover {
+            background-color: #ffb366; /* Колір фону при наведенні на підменю */
+            color: #333;
+        }
+
+        /* Основний контент */
+        .content {
+            display: flex;
+            justify-content: flex-end;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .container {
+            position: relative;
+            width: 50%;
+            margin-left: 50px;
+        }
+
+        .image {
+            display: block;
+            transition: filter 0.5s ease;
+            width: 100%; /* Картинка займає 100% ширини контейнера */
+            height: auto;
+        }
+
+        .text {
+            background-color: #ffae00;
+            color: white;
+            font-size: 1.5em;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        /* Кнопки */
+        .btn {
+            position: absolute;
+            padding: 10px 20px;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #f0f0f0;
+        }
+
+        .btn-light {
+            top: 20%;
+            left: 55%;
+        }
+
+        .btn-temp {
+            top: 15%;
+            left: 15%;
+        }
+
+        .btn-music {
+            top: 55%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* Анімація повітря */
+        .air-animation {
+            position: absolute;
+            top: 15%;
+            left: 11%;
+            width: 20px;
+            height: 100px;
+            background: linear-gradient(180deg, rgba(17, 93, 235, 0.8), rgba(8, 188, 248, 0));
+            border-radius: 10px;
+            animation: air-flow 1.5s infinite;
+            display: none;
+        }
+
+        @keyframes air-flow {
+            0% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100px);
+                opacity: 0;
+            }
+        }
+
+        .radio-wave-animation {
+            position: absolute;
+            top: 45%;
+            left: 45%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 20px;
+            border: 2px solid orange;
+            border-radius: 50%;
+            opacity: 0;
+            animation: none;
+        }
+
+        @keyframes radio-wave {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(5);
+                opacity: 0;
+            }
+        }
+
+    .scroll-reveal {
+        opacity: 0;
+        transform: translateY(50px);
+        transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .scroll-reveal.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    </style>
+</head>
+<body>
+
+    <header class="banner">
+        <img src="C:\Users\User\Desktop\HTML\site\photo_5325764816205374107_y.jpg" alt="Розумний будинок" class="banner-image">
+        <div class="banner-content">
+          <h1 class="banner-title">Розумний будинок</h1>
+        </div>
+    </header>
+
+    <!-- Навігаційне меню -->
+    <nav class="navbar">
+        <ul>
+            <li><a href="#home">Головна</a></li>
+            <li class="dropdown">
+                <a href="#function.html">Функціонал</a>
+                <ul class="submenu">
+                    <li><a href="security.html">Безпека</a></li>
+                    <li><a href="light.html">Освітлення</a></li>
+                    <li><a href="temperature.html">Клімат</a></li>
+                    <li><a href="video.html">Відеоспостереження</a></li>
+                </ul>
+            </li>
+            <li><a href="sources.html">Джерела</a></li>
+            <li><a href="about.html">Про розробника</a></li>
+        </ul>
+    </nav>
+
+    <!-- Основний контент -->
+    <div class="content">    
+        <div class="text-container scroll-reveal"> 
+            <h2>Розумний будинок для вашого комфорту</h2>
+            <p>Всі системи вашого дому під контролем через мобільний додаток.</p>
+    
+            <h2>Що таке розумний будинок?</h2>
+            <p>
+                Розумний будинок — це система автоматизації житлового простору, що дозволяє користувачам зручно контролювати різноманітні пристрої та системи в домі за допомогою технологій, таких як Інтернет речей (IoT), сенсори, штучний інтелект і мобільні додатки. Основною метою розумного будинку є підвищення комфорту, енергоефективності, безпеки та зручності проживання завдяки інтеграції різних технологій, які можуть автоматично взаємодіяти та адаптуватися до потреб мешканців.
+            </p> 
+    
+            <h3>Система «розумний дім»: нюанси та переваги</h3>
+            <p>
+                Власникам житлових чи комерційних приміщень хочеться максимально комфортно та просто керувати всією встановленою технікою. 
+                Система «розумний дім» для квартири, котеджу або офісу є автоматизованим рішенням, що складається зі смартпристроїв на дистанційному управлінні. 
+                З її допомогою все, що відбувається вдома, легко контролювати на відстані.
+            </p>
+            <p>
+                Для налаштування та регулювання параметрів використовують спеціальні панелі або цифрові пристрої на зразок смартфона або планшета. 
+                Користувач визначає певні сценарії для кожної дії, за допомогою яких обладнання розуміє, коли потрібно виконати ту чи іншу операцію. 
+                Наприклад, при виявленні руху в кімнаті спеціальним датчиком система вмикає світло.
+            </p>
+        </div>
+        <div class="container">
+            <img src="c:\Users\User\Desktop\sowa-mainscreen-image-1.jpg.webp" alt="Розумний будинок" class="image" id="mainImage">
+            <!-- Кнопки -->
+            <button class="btn btn-light" id="lightButton">Світло</button>
+            <button class="btn btn-temp" id="tempButton">Температура</button>
+            <button class="btn btn-music" id="musicButton">Музика</button>
+
+            <!-- Анімація кондиціонера -->
+            <div class="air-animation" id="airAnimation"></div>
+            <!-- Анімація звуку -->
+            <div class="sound-animation" id="soundAnimation"></div>
+            <div class="radio-wave-animation" id="radioWave"></div>
+
+        </div>
+    </div>
+
+
+    <script>
+        // Елементи
+        const lightButton = document.getElementById('lightButton');
+        const tempButton = document.getElementById('tempButton');
+        const musicButton = document.getElementById('musicButton');
+        const mainImage = document.getElementById('mainImage');
+        const airAnimation = document.getElementById('airAnimation');
+        const navbar = document.getElementById('navbar');
+        const radioWave = document.getElementById('radioWave');
+        
+        
+        let lightOn = true; // Стан світла
+        let musicOn = true; // Стан музики
+        let isAirOn = false;
+        let isLightOn = true;
+        let isMusicPlaying = false;
+
+
+
+        // Керування світлом
+        lightButton.addEventListener('click', () => {
+            isLightOn = !isLightOn; // Перемикаємо стан
+    if (isLightOn) {
+        mainImage.style.filter = 'brightness(1)'; // Робимо картинку світлою
+        lightButton.textContent = 'Світло увімкнуто'; // Змінюємо текст кнопки
+    } else {
+        mainImage.style.filter = 'brightness(0.5)'; // Робимо картинку темнішою
+        lightButton.textContent = 'Світло вимкнуто'; // Змінюємо текст кнопки
+    }
+        });
+
+        // Керування температурою (анімувати повітря)
+        tempButton.addEventListener('click', () => {
+            isAirOn = !isAirOn; // Перемикаємо стан
+    if (isAirOn) {
+        airAnimation.style.display = 'block'; // Відображаємо анімацію
+        tempButton.textContent = 'Комфортна температура'; // Змінюємо текст кнопки
+    } else {
+        airAnimation.style.display = 'none'; // Ховаємо анімацію
+        tempButton.textContent = 'Кондиціонер вимкнено'; // Змінюємо текст кнопки
+    }
+        });
+
+        // Керування колонками (анімувати хвилі)
+        musicButton.addEventListener('click', () => {
+            isMusicPlaying = !isMusicPlaying;
+
+    if (isMusicPlaying) {
+        musicButton.textContent = 'Музика грає';
+        radioWave.style.animation = 'radio-wave 1.5s infinite';
+    } else {
+        musicButton.textContent = 'Музику вимкнено';
+        radioWave.style.animation = 'none';
+    }
+        });
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const revealElements = document.querySelectorAll('.scroll-reveal');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target); // Зупиняємо спостереження після появи
+                    }
+                });
+            });
+
+            revealElements.forEach((el) => observer.observe(el));
+        });  
+    </script>
+</body>
+</html>
+
+

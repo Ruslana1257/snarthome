@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Клімат-контроль</title>
+    <style>
+        /* Загальні стилі для обнулення */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Загальні стилі */
+        body {
+            font-family: Arial, sans-serif;
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
+            background-color: #ffb366;
+        }
+
+        /* Хедер */
+        .banner {
+            position: relative;
+            width: 100%;
+            height: 100vh; /* Висота на весь екран */
+            overflow: hidden;
+        }
+
+        .banner h1 {
+            font-size: 4rem;
+            color: white;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
+            cursor: pointer;
+            transition: filter 0.5s ease, transform 0.5s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        .banner h1:hover {
+            filter: blur(5px);
+            transform: scale(1.1); /* Збільшуємо текст для більшого ефекту */
+        }
+
+        .banner img {
+            width: 100%; /* Банер на всю ширину */
+            height: 100%; /* Банер на всю висоту */
+            object-fit: cover; /* Масштабування, щоб не спотворювати зображення */
+        }
+
+        .banner-content {
+            position: absolute;
+            top: 50%; /* Розташування по центру банера */
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+            text-align: center;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.7),
+                         0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .banner-title {
+            font-family: Arial, sans-serif; /* Зміна шрифту на Arial */
+            font-size: 4rem;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 0 0 10px rgb(249, 100, 0), 
+                        0 0 20px rgb(255, 60, 0),
+                        0 0 30px rgb(255, 89, 0);
+            animation: glow 1.5s infinite alternate;
+        }
+
+        @keyframes glow {
+            0% {
+                text-shadow: 0 0 10px rgb(251, 135, 3),
+                            0 0 20px rgb(253, 85, 1),
+                            0 0 30px rgb(255, 115, 1);
+            }
+            100% {
+                text-shadow: 0 0 20px rgb(253, 87, 3),
+                            0 0 40px rgb(251, 123, 3),
+                            0 0 60px rgb(255, 91, 3);
+            }
+        }
+
+        .banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('C:/Users/User/Desktop/HTML/site/photo_5325764816205374107_y.jpg') no-repeat center/cover;
+            animation: zoomIn 5s ease-out forwards;
+        }
+
+        @keyframes zoomIn {
+            0% {
+                transform: scale(1.1); /* Початкове збільшення */
+            }
+            100% {
+                transform: scale(1); /* Зупиняємо анімацію у звичайному масштабі */
+            }
+        }
+
+        /* Горизонтальне меню */
+        .navbar {
+            background-color: #333; /* Темний фон */
+            display: flex;
+            justify-content: center; /* Елементи центруються по горизонталі */
+            padding: 10px 0; /* Відступи зверху і знизу */
+        }
+
+        .navbar ul {
+            list-style-type: none;
+            display: flex; /* Елементи розташовуються в ряд */
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar li {
+            position: relative; /* Для позиціонування підменю */
+            margin: 0 15px; /* Відступи між пунктами меню */
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.2em;
+            background-color: transparent;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .navbar a:hover {
+            background-color: #ffb366; /* Колір фону при наведенні */
+            color: #333; /* Колір тексту при наведенні */
+        }
+
+        .submenu {
+            list-style-type: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: #333;
+            visibility: hidden;
+            padding: 0;
+            opacity: 0;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            border-radius: 5px;
+            padding: 0; /* Прибираємо відступи */
+            width: 210px; /* Ширина підменю */
+            display: flex; /* Використовуємо flexbox */
+            flex-direction: column; /* Розташовуємо елементи вертикально */
+            z-index: 10; /* Перекриває інші елементи на сторінці */
+        }
+
+        /* При наведенні на пункт меню з підменю */
+        .navbar li:hover .submenu {
+            visibility: visible; /* Зробити видимим */
+            opacity: 1; /* Зробити прозорим */
+        }
+
+        /* Стилі для елементів підменю */
+        .submenu li {
+            margin: 5px 0;
+        }
+
+        .submenu a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            display: block; /* Всьому елементу задаємо блочний вигляд */
+            border-radius: 5px;
+        }
+
+        .submenu a:hover {
+            background-color: #ffb366; /* Колір фону при наведенні на підменю */
+            color: #333;
+        }
+
+        header {
+            text-align: center;
+            background-color: #374b79;
+            color: white;
+            padding: 20px 0;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #ffa348;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .features {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 20px;
+            text-align: center;
+        }
+
+        .feature {
+            flex: 1 1 calc(25% - 20px);
+            padding: 20px;
+            background-color: #374b79;
+            color: #000000;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .feature:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .feature img {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 15px;
+        }
+
+        .feature h3 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .feature p {
+            font-size: 1rem;
+            color: #000000;
+        }
+
+        /* Адаптивність */
+        @media (max-width: 768px) {
+            .feature {
+                flex: 1 1 100%;
+            }
+        }
+
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .scroll-reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }   
+</style>
+</head>
+<body>
+
+    <header class="banner">
+        <img src="C:/Users/User/Desktop/HTML/site/photo_5325764816205374107_y.jpg" alt="Безпека в будинку" class="banner-image">
+        <div class="banner-content">
+            <h1 class="banner-title">Клімат-контроль</h1>
+        </div>
+    </header>
+
+    <nav class="navbar">
+        <ul>
+            <li><a href="site.html">Головна</a></li>
+            <li class="dropdown">
+                <a href="#function.html">Функціонал</a>
+                <ul class="submenu">
+                    <li><a href="security.html">Безпека</a></li>
+                    <li><a href="light.html">Освітлення</a></li>
+                    <li><a href="#temperature.html">Клімат</a></li>
+                    <li><a href="video.html">Відеоспостереження</a></li>
+                </ul>
+            </li>
+            <li><a href="sources.html">Джерела</a></li>
+            <li><a href="about.html">Про розробника</a></li>
+        </ul>
+    </nav>
+
+    <div class="container scroll-reveal">
+        <div class="features">
+            <div class="feature">
+                <img src="C:\Users\User\Downloads\Знімок_екрана_2024-11-26_230458-removebg-preview.png" alt="Автоматизація">
+                <p><strong>Управління за часом.</strong> Можливе встановлення денної та нічної температури, а також поділу днів тижня на робочі та вихідні. Система підлаштовується під Ваш ритм життя, змінюючи температуру у Вашому будинку або офісі, формуючи мікроклімат найбільш комфортний для роботи або відпочинку.</p>
+            </div>
+            <div class="feature">
+                <img src="C:\Users\User\Downloads\Знімок_екрана_2024-11-26_230540-removebg-preview.png" alt="Зональне керування">
+                <p><Strong>Автоматизоване керування </Strong>всіма системами, причетними до формування клімату у Вашій оселі. Після того, як Ви встановите необхідну для Вас температуру, Розумний Дім сам прийме рішення, яким з пристроїв слід керувати (кондиціонери, радіатори, теплі підлоги, зволожувачі, припливно-витяжна система).</p>
+            </div>
+            <div class="feature">
+                <img src="C:\Users\User\Downloads\Знімок_екрана_2024-11-26_230604-removebg-preview.png" alt="Керування часом">
+                 <p><strong>Зональне керування.</strong>Дає можливість увімкнути та вимкнути опалення в усьому будинку відразу, включати та вимикати будь-яку зону окремо, а також задати в будь-якій зоні опалення власний температурний режим. Кожне приміщення опалюватиметься за індивідуальною програмою.</p>
+            </div>
+            <div class="feature">
+                <img src="C:\Users\User\Downloads\Знімок_екрана_2024-11-26_230650-removebg-preview.png" alt="Єдиний пристрій">
+                 <p><strong>Віддалене керування системою клімат-контролю.</strong>Можливість віддалено контролювати та керувати кліматом у будинку з телефону чи комп’ютера через Інтернет. Наприклад: перед приїздом до заміського будинку, ви заздалегідь ставите будинок на прогрів і він зустрічає вас із дороги затишним теплом.</p>
+            </div>
+            <div class="feature">
+                <img src="C:\Users\User\Downloads\Знімок_екрана_2024-11-26_230711-removebg-preview.png" alt="Єдиний пристрій">
+                <p><strong>Метеостанція.</strong>Збір метеоінформації всередині та поза домом (температура, вологість, тиск, швидкість та напрям вітру, атм. тиск). Відображення необхідної інформації на пристрої візуалізації. Прогнозування погоди.</p>
+            </div>
+            <div class="feature">
+                <img src="C:\Users\User\Downloads\Знімок_екрана_2024-11-26_230745-removebg-preview.png" alt="Єдиний пристрій">
+                <p><strong>Можливість оповіщення</strong>про збої в системі опалення (протечки води, зайвий тиск у трубах). Також Ви отримаєте повідомлення про необхідність здійснити технічне обслуговування кондиціонера, системи вентиляції тощо.</p>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const revealElements = document.querySelectorAll('.scroll-reveal');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target); // Зупиняємо спостереження після появи
+                    }
+                });
+            });
+
+            revealElements.forEach((el) => observer.observe(el));
+        });
+    </script>
+</body>
+</html>
+
